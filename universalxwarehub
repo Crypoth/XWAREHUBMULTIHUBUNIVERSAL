@@ -1,1 +1,464 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Crypoth/XWAREHUBMULTIHUB/refs/heads/main/key%20system"))()
+-- Feel free to use this (Ai generated haha)
+local ScriptUpdater = {}
+
+-- Configuration
+local CONFIG = {
+    DEFAULT_SCRIPT_URL = "https://raw.githubusercontent.com/Crypoth/SCRIPT-SCRIPT/refs/heads/main/XWAREHUB%20UNIVERSAL",
+    SCRIPT_VERSION = "2.1",
+    DEBUG_MODE = false
+}
+
+-- Services (for Roblox)
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+
+-- Get current time
+local function getTimestamp()
+    return os.date("%H:%M:%S")
+end
+
+-- Create the GUI
+local function createGui()
+    local player = Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+    
+    -- Check if GUI already exists and destroy it
+    local existingGui = playerGui:FindFirstChild("ScriptUpdaterGui")
+    if existingGui then
+        existingGui:Destroy()
+    end
+    
+    -- Main ScreenGui
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "ScriptUpdaterGui"
+    screenGui.DisplayOrder = 10
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
+    
+    -- Background blur
+    local backgroundBlur = Instance.new("Frame")
+    backgroundBlur.Name = "BackgroundBlur"
+    backgroundBlur.Size = UDim2.new(1, 0, 1, 0)
+    backgroundBlur.Position = UDim2.new(0, 0, 0, 0)
+    backgroundBlur.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    backgroundBlur.BackgroundTransparency = 0.3
+    backgroundBlur.BorderSizePixel = 0
+    backgroundBlur.Parent = screenGui
+    
+    -- Main container
+    local container = Instance.new("Frame")
+    container.Name = "Container"
+    container.Size = UDim2.new(0, 400, 0, 300)
+    container.Position = UDim2.new(0.5, -200, 0.5, -150)
+    container.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+    container.BorderSizePixel = 0
+    container.Parent = screenGui
+    
+    -- Container corner
+    local containerCorner = Instance.new("UICorner")
+    containerCorner.CornerRadius = UDim.new(0, 15)
+    containerCorner.Parent = container
+    
+    -- Container gradient
+    local containerGradient = Instance.new("UIGradient")
+    containerGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 60, 75)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 45, 55))
+    }
+    containerGradient.Rotation = 45
+    containerGradient.Parent = container
+    
+    -- Warning icon
+    local warningIcon = Instance.new("TextLabel")
+    warningIcon.Name = "WarningIcon"
+    warningIcon.Size = UDim2.new(0, 50, 0, 50)
+    warningIcon.Position = UDim2.new(0.5, -25, 0, 20)
+    warningIcon.BackgroundTransparency = 1
+    warningIcon.Text = "⚠️"
+    warningIcon.TextColor3 = Color3.fromRGB(255, 107, 107)
+    warningIcon.TextScaled = true
+    warningIcon.Font = Enum.Font.SourceSansBold
+    warningIcon.Parent = container
+    
+    -- Title
+    local title = Instance.new("TextLabel")
+    title.Name = "Title"
+    title.Size = UDim2.new(1, -40, 0, 30)
+    title.Position = UDim2.new(0, 20, 0, 80)
+    title.BackgroundTransparency = 1
+    title.Text = "Script Update Required"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.SourceSansBold
+    title.TextXAlignment = Enum.TextXAlignment.Center
+    title.Parent = container
+    
+    -- Message
+    local message = Instance.new("TextLabel")
+    message.Name = "Message"
+    message.Size = UDim2.new(1, -40, 0, 40)
+    message.Position = UDim2.new(0, 20, 0, 120)
+    message.BackgroundTransparency = 1
+    message.Text = "You are executing an outdated version of the script.\nPress the button below to execute the updated script."
+    message.TextColor3 = Color3.fromRGB(200, 200, 200)
+    message.TextScaled = true
+    message.Font = Enum.Font.SourceSans
+    message.TextXAlignment = Enum.TextXAlignment.Center
+    message.TextWrapped = true
+    message.Parent = container
+    
+    -- Execute button
+    local executeButton = Instance.new("TextButton")
+    executeButton.Name = "ExecuteButton"
+    executeButton.Size = UDim2.new(0, 200, 0, 40)
+    executeButton.Position = UDim2.new(0.5, -100, 0, 180)
+    executeButton.BackgroundColor3 = Color3.fromRGB(255, 107, 107)
+    executeButton.BorderSizePixel = 0
+    executeButton.Text = "Execute Updated Script"
+    executeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    executeButton.TextScaled = true
+    executeButton.Font = Enum.Font.SourceSansBold
+    executeButton.Parent = container
+    
+    -- Execute button corner
+    local executeButtonCorner = Instance.new("UICorner")
+    executeButtonCorner.CornerRadius = UDim.new(0, 20)
+    executeButtonCorner.Parent = executeButton
+    
+    -- Execute button gradient
+    local executeButtonGradient = Instance.new("UIGradient")
+    executeButtonGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 107, 107)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(238, 90, 36))
+    }
+    executeButtonGradient.Rotation = 45
+    executeButtonGradient.Parent = executeButton
+    
+    -- Advanced button
+    local advancedButton = Instance.new("TextButton")
+    advancedButton.Name = "AdvancedButton"
+    advancedButton.Size = UDim2.new(0, 150, 0, 25)
+    advancedButton.Position = UDim2.new(0.5, -75, 0, 230)
+    advancedButton.BackgroundColor3 = Color3.fromRGB(108, 117, 125)
+    advancedButton.BorderSizePixel = 0
+    advancedButton.Text = "Show Advanced Options"
+    advancedButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    advancedButton.TextScaled = true
+    advancedButton.Font = Enum.Font.SourceSans
+    advancedButton.Parent = container
+    
+    -- Advanced button corner
+    local advancedButtonCorner = Instance.new("UICorner")
+    advancedButtonCorner.CornerRadius = UDim.new(0, 12)
+    advancedButtonCorner.Parent = advancedButton
+    
+    -- Close button
+    local closeButton = Instance.new("TextButton")
+    closeButton.Name = "CloseButton"
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -35, 0, 5)
+    closeButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60)
+    closeButton.BorderSizePixel = 0
+    closeButton.Text = "✕"
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.TextScaled = true
+    closeButton.Font = Enum.Font.SourceSansBold
+    closeButton.Parent = container
+    
+    -- Close button corner
+    local closeButtonCorner = Instance.new("UICorner")
+    closeButtonCorner.CornerRadius = UDim.new(0, 15)
+    closeButtonCorner.Parent = closeButton
+    
+    -- Advanced section (initially hidden)
+    local advancedSection = Instance.new("Frame")
+    advancedSection.Name = "AdvancedSection"
+    advancedSection.Size = UDim2.new(0, 380, 0, 200)
+    advancedSection.Position = UDim2.new(0.5, -190, 1, 10)
+    advancedSection.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    advancedSection.BorderSizePixel = 0
+    advancedSection.Visible = false
+    advancedSection.Parent = container
+    
+    -- Advanced section corner
+    local advancedSectionCorner = Instance.new("UICorner")
+    advancedSectionCorner.CornerRadius = UDim.new(0, 10)
+    advancedSectionCorner.Parent = advancedSection
+    
+    -- Custom script label
+    local customLabel = Instance.new("TextLabel")
+    customLabel.Name = "CustomLabel"
+    customLabel.Size = UDim2.new(1, -20, 0, 20)
+    customLabel.Position = UDim2.new(0, 10, 0, 10)
+    customLabel.BackgroundTransparency = 1
+    customLabel.Text = "Custom Lua Script"
+    customLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    customLabel.TextScaled = true
+    customLabel.Font = Enum.Font.SourceSansBold
+    customLabel.TextXAlignment = Enum.TextXAlignment.Left
+    customLabel.Parent = advancedSection
+    
+    -- Text input
+    local textInput = Instance.new("TextBox")
+    textInput.Name = "TextInput"
+    textInput.Size = UDim2.new(1, -20, 0, 100)
+    textInput.Position = UDim2.new(0, 10, 0, 40)
+    textInput.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    textInput.BorderSizePixel = 0
+    textInput.Text = "-- Enter your Lua script here\nprint('Hello World!')"
+    textInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textInput.TextSize = 12
+    textInput.Font = Enum.Font.Code
+    textInput.TextXAlignment = Enum.TextXAlignment.Left
+    textInput.TextYAlignment = Enum.TextYAlignment.Top
+    textInput.MultiLine = true
+    textInput.TextWrapped = true
+    textInput.ClearTextOnFocus = false
+    textInput.Parent = advancedSection
+    
+    -- Text input corner
+    local textInputCorner = Instance.new("UICorner")
+    textInputCorner.CornerRadius = UDim.new(0, 5)
+    textInputCorner.Parent = textInput
+    
+    -- Custom execute button
+    local customExecuteButton = Instance.new("TextButton")
+    customExecuteButton.Name = "CustomExecuteButton"
+    customExecuteButton.Size = UDim2.new(0, 150, 0, 30)
+    customExecuteButton.Position = UDim2.new(0.5, -75, 0, 155)
+    customExecuteButton.BackgroundColor3 = Color3.fromRGB(255, 107, 107)
+    customExecuteButton.BorderSizePixel = 0
+    customExecuteButton.Text = "Execute Custom Script"
+    customExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    customExecuteButton.TextScaled = true
+    customExecuteButton.Font = Enum.Font.SourceSansBold
+    customExecuteButton.Parent = advancedSection
+    
+    -- Custom execute button corner
+    local customExecuteButtonCorner = Instance.new("UICorner")
+    customExecuteButtonCorner.CornerRadius = UDim.new(0, 15)
+    customExecuteButtonCorner.Parent = customExecuteButton
+    
+    -- Result display
+    local resultDisplay = Instance.new("TextLabel")
+    resultDisplay.Name = "ResultDisplay"
+    resultDisplay.Size = UDim2.new(1, -20, 0, 80)
+    resultDisplay.Position = UDim2.new(0, 10, 1, 20)
+    resultDisplay.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    resultDisplay.BorderSizePixel = 0
+    resultDisplay.Text = ""
+    resultDisplay.TextColor3 = Color3.fromRGB(255, 255, 255)
+    resultDisplay.TextSize = 10
+    resultDisplay.Font = Enum.Font.Code
+    resultDisplay.TextXAlignment = Enum.TextXAlignment.Left
+    resultDisplay.TextYAlignment = Enum.TextYAlignment.Top
+    resultDisplay.TextWrapped = true
+    resultDisplay.Visible = false
+    resultDisplay.Parent = container
+    
+    -- Result display corner
+    local resultDisplayCorner = Instance.new("UICorner")
+    resultDisplayCorner.CornerRadius = UDim.new(0, 5)
+    resultDisplayCorner.Parent = resultDisplay
+    
+    return {
+        screenGui = screenGui,
+        container = container,
+        executeButton = executeButton,
+        advancedButton = advancedButton,
+        closeButton = closeButton,
+        advancedSection = advancedSection,
+        textInput = textInput,
+        customExecuteButton = customExecuteButton,
+        resultDisplay = resultDisplay
+    }
+end
+
+-- Script execution function
+local function executeLuaScript(code)
+    local output = {}
+    local success = true
+    local errorMessage = ""
+    
+    table.insert(output, "[" .. getTimestamp() .. "] Executing script...")
+    
+    -- Handle HTTP requests
+    if string.find(code, "HttpGet") or string.find(code, "loadstring") then
+        local success_load, result_load = pcall(function()
+            return loadstring(code)()
+        end)
+        
+        if success_load then
+            table.insert(output, "[" .. getTimestamp() .. "] ✅ Script loaded successfully!")
+            table.insert(output, "[" .. getTimestamp() .. "] ✅ Script Hub initialized")
+            table.insert(output, "[" .. getTimestamp() .. "] ✅ All modules loaded")
+            table.insert(output, "[" .. getTimestamp() .. "] ✅ Ready for use!")
+        else
+            success = false
+            errorMessage = tostring(result_load)
+            table.insert(output, "[" .. getTimestamp() .. "] ❌ Failed to load script: " .. errorMessage)
+        end
+    else
+        -- Handle regular Lua code
+        local func, err = loadstring(code)
+        if func then
+            local status, result = pcall(func)
+            if status then
+                table.insert(output, "[" .. getTimestamp() .. "] ✅ Script executed successfully")
+                if result then
+                    table.insert(output, "[" .. getTimestamp() .. "] Result: " .. tostring(result))
+                end
+            else
+                success = false
+                errorMessage = tostring(result)
+                table.insert(output, "[" .. getTimestamp() .. "] ❌ Runtime error: " .. errorMessage)
+            end
+        else
+            success = false
+            errorMessage = tostring(err)
+            table.insert(output, "[" .. getTimestamp() .. "] ❌ Syntax error: " .. errorMessage)
+        end
+    end
+    
+    return {
+        success = success,
+        output = table.concat(output, "\n"),
+        error = errorMessage
+    }
+end
+
+-- Main ScriptUpdater functions
+function ScriptUpdater.executeDefault()
+    local defaultScript = 'loadstring(game:HttpGet("' .. CONFIG.DEFAULT_SCRIPT_URL .. '", true))()'
+    
+    return executeLuaScript(defaultScript)
+end
+
+function ScriptUpdater.executeCustom(code)
+    if not code or code == "" then
+        return {success = false, error = "No code provided", output = "Please provide Lua code to execute."}
+    end
+    
+    return executeLuaScript(code)
+end
+
+-- Animation functions
+local function animateIn(gui)
+    local container = gui.container
+    container.Size = UDim2.new(0, 0, 0, 0)
+    container.Position = UDim2.new(0.5, 0, 0.5, 0)
+    
+    local tween = TweenService:Create(container, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 400, 0, 300),
+        Position = UDim2.new(0.5, -200, 0.5, -150)
+    })
+    tween:Play()
+end
+
+local function animateOut(gui)
+    local container = gui.container
+    local tween = TweenService:Create(container, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0),
+        Position = UDim2.new(0.5, 0, 0.5, 0)
+    })
+    tween:Play()
+    
+    tween.Completed:Connect(function()
+        gui.screenGui:Destroy()
+    end)
+end
+
+-- Show result function
+local function showResult(gui, result)
+    local resultDisplay = gui.resultDisplay
+    resultDisplay.Text = result.output
+    resultDisplay.TextColor3 = result.success and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 100, 100)
+    resultDisplay.Visible = true
+    
+    -- Auto-hide after 5 seconds
+    local connection
+    connection = game:GetService("RunService").Heartbeat:Connect(function()
+        wait(5)
+        if resultDisplay and resultDisplay.Parent then
+            resultDisplay.Visible = false
+        end
+        connection:Disconnect()
+    end)
+end
+
+-- Main function to show GUI
+function ScriptUpdater.showGui()
+    local gui = createGui()
+    
+    -- Animate in
+    animateIn(gui)
+    
+    -- Button connections
+    gui.executeButton.MouseButton1Click:Connect(function()
+        local result = ScriptUpdater.executeDefault()
+        showResult(gui, result)
+        
+        -- Close GUI after successful execution
+        if result.success then
+            wait(2)
+            animateOut(gui)
+        end
+    end)
+    
+    gui.closeButton.MouseButton1Click:Connect(function()
+        animateOut(gui)
+    end)
+    
+    -- Advanced options toggle
+    local advancedVisible = false
+    gui.advancedButton.MouseButton1Click:Connect(function()
+        advancedVisible = not advancedVisible
+        gui.advancedSection.Visible = advancedVisible
+        gui.advancedButton.Text = advancedVisible and "Hide Advanced Options" or "Show Advanced Options"
+        
+        -- Resize container
+        local newHeight = advancedVisible and 520 or 300
+        local tween = TweenService:Create(gui.container, TweenInfo.new(0.3), {
+            Size = UDim2.new(0, 400, 0, newHeight),
+            Position = UDim2.new(0.5, -200, 0.5, -newHeight/2)
+        })
+        tween:Play()
+    end)
+    
+    -- Custom script execution
+    gui.customExecuteButton.MouseButton1Click:Connect(function()
+        local code = gui.textInput.Text
+        local result = ScriptUpdater.executeCustom(code)
+        showResult(gui, result)
+    end)
+    
+    -- Button hover effects
+    local function addHoverEffect(button, hoverColor, normalColor)
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = hoverColor
+        end)
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = normalColor
+        end)
+    end
+    
+    addHoverEffect(gui.executeButton, Color3.fromRGB(255, 120, 120), Color3.fromRGB(255, 107, 107))
+    addHoverEffect(gui.closeButton, Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 60, 60))
+    addHoverEffect(gui.advancedButton, Color3.fromRGB(120, 127, 135), Color3.fromRGB(108, 117, 125))
+    addHoverEffect(gui.customExecuteButton, Color3.fromRGB(255, 120, 120), Color3.fromRGB(255, 107, 107))
+    
+    return gui
+end
+
+-- Auto-initialize and show GUI
+if game and Players.LocalPlayer then
+    ScriptUpdater.showGui()
+    print("[" .. getTimestamp() .. "] ⚠️ Script Update Required - GUI displayed")
+else
+    print("[" .. getTimestamp() .. "] ⚠️ Script Update Required")
+    print("[" .. getTimestamp() .. "] ℹ️ GUI not available in this environment")
+end
+
+return ScriptUpdater
